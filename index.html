@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Card</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f0020;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+ 
+    .card {
+      min-height: 600px;
+      width: 100%;
+      max-width: 420px;
+      background: linear-gradient(160deg, #1a0533 0%, #2d0b5a 40%, #1a1040 100%);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 32px 24px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    .stars { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; }
+    .star {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0;
+      animation: twinkle 2s infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 0.8; }
+    }
+ 
+    .title { font-family: Georgia, serif; font-size: 13px; letter-spacing: 4px; color: #d4a8ff; text-transform: uppercase; margin-bottom: 8px; opacity: 0.85; }
+    .main-title { font-family: Georgia, serif; font-size: 36px; font-weight: 700; color: #fff; text-align: center; line-height: 1.2; margin-bottom: 4px; text-shadow: 0 0 30px rgba(180,100,255,0.6); }
+    .subtitle { font-size: 14px; color: #c8a8e8; margin-bottom: 28px; text-align: center; }
+ 
+    .cake-wrap { position: relative; width: 280px; margin-bottom: 20px; }
+ 
+    .mic-hint {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      padding: 8px 18px;
+      font-size: 13px;
+      color: #e0c8ff;
+      text-align: center;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      user-select: none;
+    }
+    .mic-hint:hover { background: rgba(255,255,255,0.18); }
+ 
+    .mic-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #888;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .mic-dot.listening { background: #f87171; animation: pulse 0.8s infinite; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+ 
+    .vol-bar { width: 100%; max-width: 260px; height: 6px; background: rgba(255,255,255,0.12); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+    .vol-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, #a78bfa, #f472b6); width: 0%; transition: width 0.1s; }
+ 
+    .confetti-wrap { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; }
+    .confetti-piece {
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 2px;
+      top: -20px;
+      animation: fall linear forwards;
+      opacity: 0;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(700px) rotate(720deg); opacity: 0; }
+    }
+ 
+    .blown-msg { font-family: Georgia, serif; font-size: 22px; color: #fde68a; text-align: center; margin-top: 8px; min-height: 32px; text-shadow: 0 0 20px rgba(253,230,138,0.6); opacity: 0; transition: opacity 0.6s; }
+    .blown-msg.show { opacity: 1; }
+ 
+    .footer { font-size: 12px; color: rgba(200,168,232,0.5); margin-top: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="stars" id="stars"></div>
+  <div class="confetti-wrap" id="confetti"></div>
+ 
+  <p class="title">✦ Spesial untukmu ✦</p>
+  <h1 class="main-title">Selamat<br>Ulang Tahun!</h1>
+  <p class="subtitle">Semoga hari ini selalu menjadi yang terbaik 🎉</p>
+ 
+  <svg class="cake-wrap" viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg" id="cakeSvg">
+    <ellipse cx="140" cy="232" rx="105" ry="14" fill="#7c3aed" opacity="0.5"/>
+    <rect x="30" y="175" width="220" height="60" rx="10" fill="#c084fc"/>
+    <rect x="30" y="175" width="220" height="18" rx="6" fill="#d8b4fe"/>
+    <circle cx="70" cy="195" r="5" fill="#fff" opacity="0.5"/>
+    <circle cx="105" cy="200" r="4" fill="#fbbf24" opacity="0.7"/>
+    <circle cx="140" cy="195" r="5" fill="#fff" opacity="0.5"/>
+    <circle cx="175" cy="200" r="4" fill="#fbbf24" opacity="0.7"/>
+    <circle cx="210" cy="195" r="5" fill="#fff" opacity="0.5"/>
+    <rect x="52" y="120" width="176" height="58" rx="10" fill="#a855f7"/>
+    <rect x="52" y="120" width="176" height="16" rx="6" fill="#c084fc"/>
+    <circle cx="90" cy="140" r="4" fill="#fff" opacity="0.5"/>
+    <circle cx="120" cy="145" r="3.5" fill="#f9a8d4" opacity="0.8"/>
+    <circle cx="140" cy="140" r="4" fill="#fbbf24" opacity="0.7"/>
+    <circle cx="160" cy="145" r="3.5" fill="#f9a8d4" opacity="0.8"/>
+    <circle cx="190" cy="140" r="4" fill="#fff" opacity="0.5"/>
+    <rect x="78" y="74" width="124" height="50" rx="10" fill="#9333ea"/>
+    <rect x="78" y="74" width="124" height="14" rx="6" fill="#a855f7"/>
+    <path d="M88 74 Q94 60 100 74" fill="#f5f3ff" opacity="0.7"/>
+    <path d="M115 74 Q121 58 127 74" fill="#f5f3ff" opacity="0.7"/>
+    <path d="M142 74 Q148 58 154 74" fill="#f5f3ff" opacity="0.7"/>
+    <path d="M169 74 Q175 58 181 74" fill="#f5f3ff" opacity="0.7"/>
+ 
+    <!-- Candle 1 -->
+    <rect x="92" y="44" width="12" height="32" rx="3" fill="#fbbf24"/>
+    <g id="candle1">
+      <ellipse cx="98" cy="44" rx="5" ry="7" fill="#fde68a" id="flame1-outer"/>
+      <ellipse cx="98" cy="46" rx="2.5" ry="4" fill="#f97316" id="flame1-inner"/>
+    </g>
+    <!-- Candle 2 -->
+    <rect x="114" y="38" width="12" height="38" rx="3" fill="#f472b6"/>
+    <g id="candle2">
+      <ellipse cx="120" cy="38" rx="5" ry="7" fill="#fde68a" id="flame2-outer"/>
+      <ellipse cx="120" cy="40" rx="2.5" ry="4" fill="#f97316" id="flame2-inner"/>
+    </g>
+    <!-- Candle 3 -->
+    <rect x="134" y="32" width="12" height="44" rx="3" fill="#34d399"/>
+    <g id="candle3">
+      <ellipse cx="140" cy="32" rx="5" ry="7" fill="#fde68a" id="flame3-outer"/>
+      <ellipse cx="140" cy="34" rx="2.5" ry="4" fill="#f97316" id="flame3-inner"/>
+    </g>
+    <!-- Candle 4 -->
+    <rect x="154" y="38" width="12" height="38" rx="3" fill="#fb923c"/>
+    <g id="candle4">
+      <ellipse cx="160" cy="38" rx="5" ry="7" fill="#fde68a" id="flame4-outer"/>
+      <ellipse cx="160" cy="40" rx="2.5" ry="4" fill="#f97316" id="flame4-inner"/>
+    </g>
+    <!-- Candle 5 -->
+    <rect x="174" y="44" width="12" height="32" rx="3" fill="#60a5fa"/>
+    <g id="candle5">
+      <ellipse cx="180" cy="44" rx="5" ry="7" fill="#fde68a" id="flame5-outer"/>
+      <ellipse cx="180" cy="46" rx="2.5" ry="4" fill="#f97316" id="flame5-inner"/>
+    </g>
+  </svg>
+ 
+  <div class="mic-hint" id="micBtn">
+    <div class="mic-dot" id="micDot"></div>
+    <span id="micLabel">Tiup lilin — klik untuk aktifkan mikrofon</span>
+  </div>
+ 
+  <div class="vol-bar">
+    <div class="vol-fill" id="volFill"></div>
+  </div>
+ 
+  <div class="blown-msg" id="blownMsg">🎊 Selamat! Semoga harapanmu terkabul! 🎊</div>
+  <p class="footer">Klik tombol di atas lalu tiup mic untuk memadamkan lilin</p>
+</div>
+ 
+<script>
+(function() {
+  const stars = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = (Math.random() * 3) + 's';
+    s.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    stars.appendChild(s);
+  }
+ 
+  const flames = [
+    { out: document.getElementById('flame1-outer'), inn: document.getElementById('flame1-inner') },
+    { out: document.getElementById('flame2-outer'), inn: document.getElementById('flame2-inner') },
+    { out: document.getElementById('flame3-outer'), inn: document.getElementById('flame3-inner') },
+    { out: document.getElementById('flame4-outer'), inn: document.getElementById('flame4-inner') },
+    { out: document.getElementById('flame5-outer'), inn: document.getElementById('flame5-inner') },
+  ];
+ 
+  let blownCount = 0;
+ 
+  flames.forEach(flame => {
+    setInterval(() => {
+      const scaleY = 0.8 + Math.random() * 0.5;
+      const scaleX = 0.85 + Math.random() * 0.3;
+      flame.out.setAttribute('transform', `scale(${scaleX},${scaleY})`);
+      flame.inn.setAttribute('transform', `scale(${scaleX * 0.9},${scaleY * 0.85})`);
+    }, 80);
+  });
+ 
+  function blowCandle(flame) {
+    if (!flame.out || flame.out.style.display === 'none') return;
+    flame.out.style.display = 'none';
+    flame.inn.style.display = 'none';
+    blownCount++;
+    if (blownCount >= flames.length) onAllBlown();
+  }
+ 
+  function onAllBlown() {
+    document.getElementById('blownMsg').classList.add('show');
+    launchConfetti();
+    if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    document.getElementById('micLabel').textContent = 'Semua lilin padam! 🕯';
+    document.getElementById('micDot').classList.remove('listening');
+  }
+ 
+  function launchConfetti() {
+    const colors = ['#f472b6','#fbbf24','#34d399','#60a5fa','#a78bfa','#fb923c','#f9a8d4'];
+    const wrap = document.getElementById('confetti');
+    for (let i = 0; i < 80; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = (Math.random() * 100) + '%';
+      c.style.animationDuration = (1.2 + Math.random() * 1.8) + 's';
+      c.style.animationDelay = (Math.random() * 0.8) + 's';
+      const size = 6 + Math.random() * 8;
+      c.style.width = size + 'px';
+      c.style.height = size + 'px';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      wrap.appendChild(c);
+      setTimeout(() => c.remove(), 3200);
+    }
+  }
+ 
+  let audioCtx = null;
+  let analyser = null;
+  let listening = false;
+  let stream = null;
+  const BLOW_THRESHOLD = 55;
+ 
+  const micBtn = document.getElementById('micBtn');
+  const micDot = document.getElementById('micDot');
+  const micLabel = document.getElementById('micLabel');
+  const volFill = document.getElementById('volFill');
+ 
+  micBtn.addEventListener('click', async () => {
+    if (blownCount >= flames.length) return;
+    if (listening) { stopMic(); return; }
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 1024;
+      const source = audioCtx.createMediaStreamSource(stream);
+      source.connect(analyser);
+      listening = true;
+      micDot.classList.add('listening');
+      micLabel.textContent = 'Mendengarkan... tiup sekarang!';
+      detectBlow();
+    } catch(e) {
+      micLabel.textContent = 'Izin mikrofon ditolak 😔';
+    }
+  });
+ 
+  function stopMic() {
+    listening = false;
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    micDot.classList.remove('listening');
+    micLabel.textContent = 'Tiup lilin — klik untuk aktifkan mikrofon';
+    volFill.style.width = '0%';
+  }
+ 
+  const dataArray = new Uint8Array(512);
+  let consecutiveFrames = 0;
+ 
+  function detectBlow() {
+    if (!listening || !analyser) return;
+    analyser.getByteFrequencyData(dataArray);
+    let lowFreqSum = 0;
+    const lowEnd = Math.floor(dataArray.length * 0.15);
+    for (let i = 0; i < lowEnd; i++) lowFreqSum += dataArray[i];
+    const avg = lowFreqSum / lowEnd;
+    const pct = Math.min(100, (avg / 120) * 100);
+    volFill.style.width = pct + '%';
+    if (avg > BLOW_THRESHOLD) { consecutiveFrames++; } else { consecutiveFrames = 0; }
+    if (consecutiveFrames >= 3) {
+      consecutiveFrames = 0;
+      const remaining = flames.filter(f => f.out && f.out.style.display !== 'none');
+      if (remaining.length > 0) {
+        blowCandle(remaining[Math.floor(Math.random() * remaining.length)]);
+      }
+    }
+    if (blownCount < flames.length) requestAnimationFrame(detectBlow);
+    else volFill.style.width = '0%';
+  }
+})();
+</script>
+</body>
+</html>
+ 
+
